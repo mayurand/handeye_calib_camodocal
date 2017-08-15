@@ -24,7 +24,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf
   trajectory_msgs
-  #vrep_common
+  rospy
+  geometry_msgs
 )
 find_package(Gflags REQUIRED)
 find_package(Glog REQUIRED)
@@ -179,7 +180,7 @@ endif()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES handeye_calib_camodocal
-   CATKIN_DEPENDS eigen roscpp tf trajectory_msgs #vrep_common
+   CATKIN_DEPENDS eigen roscpp tf trajectory_msgs rospy roscpp tf geometry_msgs
 )
 
 ###########
@@ -208,6 +209,8 @@ add_executable(handeye_calib_camodocal
   src/handeye_calibration.cpp
   src/camodocal/calib/HandEyeCalibration.cc)
 
+add_executable(tf_relay_ar src/tf_relay_ar.cpp)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(handeye_calib_camodocal_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -216,6 +219,10 @@ add_executable(handeye_calib_camodocal
 message("GLOG = ${GLOG_LIBRARIES}  ${GLOG_LIB}  ${GLOG_LIBS}")
 target_link_libraries(handeye_calib_camodocal
   ${catkin_LIBRARIES} ${GLOG_LIBRARIES}  ${GLOG_LIB}  ${GLOG_LIBS} ${OpenCV_LIBRARIES} ${CERES_LIBRARIES}
+)
+
+target_link_libraries(tf_relay_ar
+   ${catkin_LIBRARIES}
 )
 #############
 ## Install ##

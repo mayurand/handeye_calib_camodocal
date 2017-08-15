@@ -144,15 +144,15 @@ Eigen::Affine3d estimateHandEye(const EigenAffineVector& baseToTip, const EigenA
 
 			rvecsArm.push_back(     eigenRotToEigenVector3dAngleAxis(robotTipinFirstTipBase.rotation()        ));
 		    tvecsArm.push_back(                                      robotTipinFirstTipBase.translation()     );
-		    
+
 		    rvecsFiducial.push_back(eigenRotToEigenVector3dAngleAxis(fiducialInFirstFiducialBase.rotation()   ));
 		    tvecsFiducial.push_back(                                 fiducialInFirstFiducialBase.translation());
 			ROS_INFO("Hand Eye Calibration Transform Pair Added");
 
 			Eigen::Vector4d r_tmp = robotTipinFirstTipBase.matrix().col(3); r_tmp[3] = 0;
 			Eigen::Vector4d c_tmp = fiducialInFirstFiducialBase.matrix().col(3); c_tmp[3] = 0;
-			
-			std::cerr << "L2Norm EE: "  << robotTipinFirstTipBase.matrix().block(0,3,3,1).norm() << " vs Cam:" << fiducialInFirstFiducialBase.matrix().block(0,3,3,1).norm()<<std::endl; 
+
+			std::cerr << "L2Norm EE: "  << robotTipinFirstTipBase.matrix().block(0,3,3,1).norm() << " vs Cam:" << fiducialInFirstFiducialBase.matrix().block(0,3,3,1).norm()<<std::endl;
 		}
 		std::cerr << "EE transform: \n" << eigenEE.matrix() << std::endl;
 		std::cerr << "Cam transform: \n" << eigenCam.matrix() << std::endl;
@@ -211,7 +211,7 @@ int getch()
   static struct termios oldt, newt;
   tcgetattr( STDIN_FILENO, &oldt);           // save old settings
   newt = oldt;
-  newt.c_lflag &= ~(ICANON);                 // disable buffering      
+  newt.c_lflag &= ~(ICANON);                 // disable buffering
   tcsetattr( STDIN_FILENO, TCSANOW, &newt);  // apply new settings
 
   int c = getchar();  // read character (non-blocking)
@@ -223,7 +223,7 @@ int getch()
 void addFrame()
 {
 	ros::Time now = ros::Time::now();
-	tf::StampedTransform EETransform, CamTransform; 
+	tf::StampedTransform EETransform, CamTransform;
 	bool hasEE =true, hasCam = true;
 
 
@@ -250,7 +250,7 @@ void addFrame()
 		Eigen::Affine3d eigenEE, eigenCam;
 		tf::transformTFToEigen(EETransform, eigenEE);
 		tf::transformTFToEigen(CamTransform, eigenCam);
-        
+
         baseToTip.push_back(eigenEE);
         cameraToTag.push_back(eigenCam);
 
@@ -268,7 +268,7 @@ void addFrame()
 
 			rvecsArm.push_back(     eigenRotToEigenVector3dAngleAxis(robotTipinFirstTipBase.rotation()        ));
 		    tvecsArm.push_back(                                      robotTipinFirstTipBase.translation()     );
-		    
+
 		    rvecsFiducial.push_back(eigenRotToEigenVector3dAngleAxis(fiducialInFirstFiducialBase.rotation()   ));
 		    tvecsFiducial.push_back(                                 fiducialInFirstFiducialBase.translation());
 			ROS_INFO("Hand Eye Calibration Transform Pair Added");
@@ -286,8 +286,8 @@ void addFrame()
 		        << EETransform.getRotation().getW() << ")\n";
 			Eigen::Vector4d r_tmp = robotTipinFirstTipBase.matrix().col(3); r_tmp[3] = 0;
 			Eigen::Vector4d c_tmp = fiducialInFirstFiducialBase.matrix().col(3); c_tmp[3] = 0;
-			
-			std::cerr << "L2Norm EE: "  << robotTipinFirstTipBase.matrix().block(0,3,3,1).norm() << " vs Cam:" << fiducialInFirstFiducialBase.matrix().block(0,3,3,1).norm()<<std::endl; 
+
+			std::cerr << "L2Norm EE: "  << robotTipinFirstTipBase.matrix().block(0,3,3,1).norm() << " vs Cam:" << fiducialInFirstFiducialBase.matrix().block(0,3,3,1).norm()<<std::endl;
 		}
 		std::cerr << "EE transform: \n" << eigenEE.matrix() << std::endl;
 		std::cerr << "Cam transform: \n" << eigenCam.matrix() << std::endl;
@@ -300,7 +300,7 @@ void addFrame()
 
 int main (int argc, char** argv)
 {
-  ros::init(argc,argv,"handeye_calib_camodocal");    
+  ros::init(argc,argv,"handeye_calib_camodocal");
   ros::NodeHandle nh("~");
   std::string transformPairsRecordFile;
   std::string transformPairsLoadFile;
@@ -309,8 +309,8 @@ int main (int argc, char** argv)
   //getting TF names
   nh.param("ARTagTF", ARTagTFname,std::string("/camera_2/ar_marker_0"));
   nh.param("cameraTF", cameraTFname,std::string("/camera_2_link"));
-  nh.param("EETF", EETFname,std::string("/ee_fixed_link"));
-  nh.param("baseTF", baseTFname,std::string("/base_link"));
+  nh.param("EETF", EETFname,std::string("/iiwa_eef"));
+  nh.param("baseTF", baseTFname,std::string("/iiwa_link_0"));
   nh.param("load_transforms_from_file", loadTransformsFromFile, false);
   nh.param("transform_pairs_record_filename", transformPairsRecordFile, std::string("TransformPairsInput.yml"));
   nh.param("transform_pairs_load_filename", transformPairsLoadFile, std::string("TransformPairsOutput.yml"));
@@ -329,7 +329,7 @@ int main (int argc, char** argv)
   }
 
   std::cerr << "Transform pairs recording to file: " << transformPairsRecordFile << "\n";
-  
+
   ros::Rate r(10); // 10 hz
   listener = new(tf::TransformListener);
 
@@ -370,7 +370,7 @@ int main (int argc, char** argv)
 	  	calib.estimateHandEyeScrew(rvecsArm,tvecsArm,rvecsFiducial,tvecsFiducial,result,false);
 
 	    	std::cerr << "Quaternion values are output in wxyz order\n";
-	    
+
 	  	std::cerr << "Calibration result (" << ARTagTFname << " pose in " << EETFname << " frame): \n"
 	  		<< result << std::endl;
 	  	Eigen::Transform<double,3,Eigen::Affine> resultAffine(result);
@@ -389,7 +389,7 @@ int main (int argc, char** argv)
 	  	ss.clear();
 	  	ss << quaternionResult.w() << " " << quaternionResult.x() << " " << quaternionResult.y() << " " << quaternionResult.z() << std::endl;
 	  	std::cerr << "Rotation (w,x,y,z): " << ss.str() << std::endl;
-	  	
+
 
 	  	break;
 	}

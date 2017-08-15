@@ -1,0 +1,36 @@
+### Intrinsic Calibration
+## Through the camera calibration app:
+	rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.108 image:=/camera/image_raw camera:=/camera
+
+## Through Camodocal
+	## Save the images of chessboard pattern
+	roslaunch ueye_cam rgb8.launch ## Run camera
+	rosrun image_view image_view image:=/camera/image_raw 
+
+	## left click to save the images or right click for kinetic
+	## Put these images in data/images2/ 
+
+
+	## then use those images to run:
+	bin/intrinsic_calib -i ../data/images2/ -p img --camera-model mei
+	rosrun image_view image_view image:=/camera/image_raw
+
+
+
+### AR-Track commands
+## For ueye camera
+roslaunch ueye_cam rgb8.launch 
+roslaunch ar_track_alvar pr2_bundle_no_kinect.launch
+
+### Ros msg forwarding
+rosrun handeye_calib_camodocal tf_relay_ar
+
+### Run ROS_Smart_servo on the robot
+
+### Running handeye_calib_camodocal
+roslaunch handeye_calib_camodocal handeye_file.launch
+
+
+## For laptop camera
+## rosrun cv_camera cv_camera_node
+## rosrun image_view image_view image:=/camera/image_raw
