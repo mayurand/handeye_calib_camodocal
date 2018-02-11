@@ -9,7 +9,7 @@
   <arg name="ARTagTF"           default="/camera" />
 
   <!-- Camera Transform, the ros topic for the tf frame of your camera sensor -->
-  <arg name="cameraTF"          default="/ar_marker_8" />
+  <arg name="cameraTF"          default="/ar_marker_10" />
 
   <!-- End Effector Transform, the ros topic for the tf frame
        at the tip of your robot's gripper or other tool -->
