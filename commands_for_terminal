@@ -24,6 +24,12 @@
 roslaunch ueye_cam rgb8.launch 
 ROS_NAMESPACE=camera rosrun image_proc image_proc
 
+### If there are no transforms active between the camera frame and the artrack base frame, the package will not work. To get the ar_track_alvar package running, you will need a static transforms.
+rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 1.0 <name of camera> <name of output frame in pr2_indiv_no_kinect> 1000
+
+<name of camera> : This is the frame of the camera in the rostopic camera_info. Echo it and get this frame name. The package will not work if the camera is not calibrated internally.
+<name of output frame in pr2_indiv_no_kinect>: This is the name of the frame in the pr2_indiv_no_kinect.launch (<arg name="output_frame" default="/base_frame_marker" />)
+
 ## Change the parameters in the file "pr2_indiv_no_kinect.launch " before starting
 roslaunch ar_track_alvar pr2_indiv_no_kinect.launch 
 
